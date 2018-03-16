@@ -1,0 +1,37 @@
+---
+- name: Install python setup tools
+  yum: name=python-setuptools
+  tags: docker
+
+- name: Install Pypi
+  easy_install: name=pip
+  tags: docker
+
+- name: Install docker-py
+  pip: name=docker-py
+  tags: docker
+
+- name: Install Docker
+  yum: name=docker state=latest
+  tags: docker
+
+- name: Make sure Docker is running
+  service: name=docker state=running
+  tags: docker
+
+- name: Start ad blocking dns container
+  become: yes
+  docker:
+    name: dns
+    image: oznu/dns-ad-blocker
+    pull: always
+    state: started
+    restart_policy: always
+    ports:
+    - "53:53/udp"
+    - "53:53/tcp"
+    env:
+        DNSCRYPT: 1
+        NS1: 8.8.8.8
+        NS2: 8.8.4.4
+  tags: docker
