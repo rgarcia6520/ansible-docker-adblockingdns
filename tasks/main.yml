@@ -15,8 +15,12 @@
   yum: name=docker state=latest
   tags: docker
 
-- name: Make sure Docker is running
+- name: Ensure Docker is running
   service: name=docker state=running
+  tags: docker
+ 
+- name: Ensure Docker is enabled
+  service: name=docker state=enabled
   tags: docker
 
 - name: Start ad blocking dns container
